@@ -60,7 +60,7 @@ function displayGifts() {
         let status = '';
         if (gift.is_bought && gift.bought_by) {
             if (gift.bought_by === myAnimal) {
-                status = `<span class="gift-status status-taken">❌ Zabrané - ty</span>`;
+                status = `<span class="gift-status status-taken">❌ Zabrané - ty ${myAnimal}</span>`;
             } else {
                 status = `<span class="gift-status status-taken">❌ Zabrané - ${gift.bought_by}</span>`;
             }
