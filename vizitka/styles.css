@@ -184,6 +184,7 @@ html::after {
   transition: transform 0.35s cubic-bezier(0.23, 1, 0.320, 1);
   position: relative;
   z-index: 2;
+  flex-shrink: 0;
 }
 
 .avatar-photo:hover {
