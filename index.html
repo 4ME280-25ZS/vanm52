@@ -8,14 +8,19 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header s zvířátkem -->
+        <!-- Header s tvým zvířátkem -->
         <header class="header">
-            <h1>🎁 Seznam Darů</h1>
+            <h1>💝 Váš seznam přání</h1>
             <div class="user-animal">
                 <span>Ty jsi:</span>
-                <span class="animal-display">🐯</span>
+                <span class="animal-display" id="myAnimal">🐯</span>
             </div>
         </header>
+
+        <!-- Vysvětlení -->
+        <div class="info-box">
+            <p>👇 <strong>Jak to funguje:</strong> Vyberte si dary, které byste chtěli koupit. Kliknutím na "Koupit" si dar zamluvíte pod svým zvířátkem. Ostatní uvidí, že je dar zabraný. Kdykoliv si to můžete rozmyslet a koupi zrušit.</p>
+        </div>
 
         <!-- Hlavní obsah -->
         <main class="gifts-grid" id="giftsGrid">
@@ -23,7 +28,6 @@
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
 </body>
 </html>
