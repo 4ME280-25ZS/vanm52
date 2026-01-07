@@ -47,7 +47,6 @@ function saveMyPurchases(purchases) {
 }
 
 function displayGifts() {
-function displayGifts() {
     const grid = document.getElementById('giftsGrid');
     const myPurchases = getMyPurchases();
     
