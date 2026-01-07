@@ -11,7 +11,7 @@ html,body{height:100%}
 body{
   margin:0;
   font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0a1f4d 0%, #2d1b4e 40%, #5a1a7f 70%, #1a3a5f 100%);
   color: #333;
   display:flex;
   align-items:center;
@@ -22,29 +22,62 @@ body{
   overflow: hidden;
 }
 
-/* Dekorativní tvary v pozadí */
+/* Vibrant gradient circles - playful background */
 body::before {
   content: '';
   position: fixed;
-  top: -50%;
-  right: -10%;
+  top: -150px;
+  right: -100px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, #ff1b9e 0%, #ff1b9e 30%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
+  opacity: 0.6;
+  mix-blend-mode: screen;
 }
 
 body::after {
   content: '';
   position: fixed;
-  bottom: -30%;
-  left: -15%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  bottom: -120px;
+  left: -80px;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #00d4ff 0%, #00d4ff 25%, transparent 65%);
   border-radius: 50%;
   z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+
+/* Additional decorative circles via pseudo-elements on html or creating more visual layers */
+html::before {
+  content: '';
+  position: fixed;
+  top: 20%;
+  left: -120px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #a855f7 0%, #a855f7 30%, transparent 65%);
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+
+html::after {
+  content: '';
+  position: fixed;
+  bottom: 10%;
+  right: -80px;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, #ffa500 0%, #ff6b9d 40%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.55;
+  mix-blend-mode: screen;
 }
 .card{
   width:100%;
@@ -87,6 +120,7 @@ body::after {
   overflow:hidden;
   background: white;
   border-radius: 15px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
 }
 
 .simple-card::before {
@@ -96,7 +130,7 @@ body::after {
   right: -15%;
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
 }
@@ -108,7 +142,7 @@ body::after {
   left: -10%;
   width: 240px;
   height: 240px;
-  background: radial-gradient(circle, rgba(118, 75, 162, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(118, 75, 162, 0.05) 0%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
 }
