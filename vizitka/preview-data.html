@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Preview — Novák Photo (single-file)</title>
+  <meta name="description" content="Preview of photographer card (single-file)" />
+  <style>
+/* Inlined styles for standalone preview */
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --muted:#9aa4b2;
+  --accent:#38bdf8;
+  --glass: rgba(255,255,255,0.03);
+  --header-height:72px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,#071025 0%, #0b1320 100%);color:#e6eef8}
+.site-root{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:24px}
+.card{width:100%;max-width:920px;background:linear-gradient(180deg,var(--card),rgba(11,18,32,0.95));border-radius:12px;padding:28px;box-shadow:0 10px 30px rgba(2,6,23,0.6);text-align:center;margin-top:calc(var(--header-height) + 18px)}
+.site-header{width:100%;position:fixed;top:0;left:0;z-index:40;display:flex;justify-content:center;backdrop-filter:blur(6px)}
+.nav{width:100%;max-width:880px;display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.nav .logo{color:var(--accent);font-weight:700;text-decoration:none;font-size:18px}
+.nav-links{list-style:none;display:flex;gap:14px;margin:0;padding:0}
+.nav-links a{color:var(--muted);text-decoration:none;font-weight:600;padding:8px}
+.nav-links a:hover{color:var(--accent)}
+.nav-toggle{display:none;background:transparent;border:0;color:var(--muted);font-size:22px}
+.avatar{width:140px;height:140px;border-radius:50%;margin:0 auto 14px;background-color:transparent;overflow:hidden;display:flex;align-items:center;justify-content:center;border:4px solid rgba(56,189,248,0.95)}
+.avatar svg{width:100%;height:100%;display:block}
+h1{margin:8px 0 4px;font-size:22px}
+.role{margin:0;color:var(--muted);font-size:14px}
+.about{margin:18px 0;text-align:left}
+.lead{color:var(--muted);max-width:560px;margin:10px auto}
+.hero{display:flex;gap:20px;align-items:center;justify-content:center;text-align:left;padding:18px 0}
+.hero-text{max-width:520px}
+.btn{display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;color:var(--bg);background:var(--accent);font-weight:600}
+.btn-outline{background:transparent;color:var(--accent);border:2px solid rgba(56,189,248,0.12)}
+.gallery{margin-top:8px;text-align:left}
+.gallery .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.gallery img{width:100%;aspect-ratio:3/2;object-fit:cover;object-position:center top;border-radius:8px;cursor:pointer;display:block}
+.cards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.card-item{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:10px;flex:1 1 220px;min-width:180px}
+.contact{margin-top:20px;text-align:left}
+.contact-row{display:flex;gap:20px;align-items:flex-start}
+.contact-form{display:flex;flex-direction:column;gap:10px;flex:1}
+.contact-form input,.contact-form textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit}
+.contact-info{min-width:220px;color:var(--muted)}
+.lightbox{position:fixed;inset:0;background:rgba(2,6,23,0.85);display:none;align-items:center;justify-content:center;z-index:60}
+.lightbox[aria-hidden="false"]{display:flex}
+.lb-inner{position:relative;max-width:90%;max-height:90%}
+.lb-inner img{max-width:100%;max-height:100%;border-radius:6px}
+.lb-close{position:absolute;right:-12px;top:-12px;background:#111;color:#fff;border:0;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer}
+@media(max-width:720px){.hero{flex-direction:column}.contact-row{flex-direction:column}.gallery .grid{grid-template-columns:1fr}.nav-toggle{display:block}.nav-links{position:fixed;top:var(--header-height);right:12px;flex-direction:column;background:rgba(11,18,32,0.95);padding:12px;border-radius:8px;display:none}.nav-links.show{display:flex}.card{margin-top:calc(var(--header-height) + 12px)}}
+section{scroll-margin-top:calc(var(--header-height) + 12px)}
+  </style>
+</head>
+<body>
+  <div class="site-root">
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="#">Novák Photo</a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Otevřít menu">☰</button>
+      <ul class="nav-links">
+        <li><a href="#about">O mně</a></li>
+        <li><a href="#gallery">Galerie</a></li>
+        <li><a href="#services">Služby</a></li>
+        <li><a href="#contact">Kontakt</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="card simple-card">
+    <div class="avatar-wrap">
+      <img class="avatar-photo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAUEBAQEAwUEBAQGBQUGCA0ICAcHCBALDAkNExAUExIQEhIUFx0ZFBYcFhISGiMaHB4fISEhFBkkJyQgJh0gISD/2wBDAQUGBggHCA8ICA8gFRIVICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICD/wAARCAJYAlgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD4yooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//2Q==" alt="Tomáš Novák — portrét">
+    </div>
+    <h1 class="name">Tomáš Novák</h1>
+    <p class="role">Fotograf — svatby & portréty</p>
+
+    <div class="contact-buttons">
+      <a class="btn" href="mailto:kontakt@novakphoto.cz">kontakt@novakphoto.cz</a>
+      <a class="btn btn-outline" href="https://novakphoto.example.com" target="_blank" rel="noopener">Portfolio</a>
+      <a class="btn btn-outline" href="https://instagram.com/novakphoto" target="_blank" rel="noopener">Instagram</a>
+    </div>
+
+    <footer class="card-foot">
+      <small>© <span id="year"></span> Tomáš Novák</small>
+    </footer>
+  </main>
+
+  </div>
+  <script>
+  // Inlined script for preview
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const emailBtn = document.querySelector('.contact-info a[href^="mailto:"]') || document.querySelector('.contacts a[href^="mailto:"]');
+  if (emailBtn && navigator.clipboard) {
+    emailBtn.addEventListener('click', (e) => {
+      const mail = emailBtn.getAttribute('href').replace('mailto:', '');
+      navigator.clipboard.writeText(mail).catch(() => {});
+    });
+  }
+  document.querySelectorAll('.nav-links a, .hero-cta a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if(href && href.startsWith('#')){
+        e.preventDefault();
+        const el = document.querySelector(href);
+        if(el){
+          const y = el.getBoundingClientRect().top + window.pageYOffset - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 72) - 12;
+          window.scrollTo({top: y, behavior: 'smooth'});
+        }
+      }
+    });
+  });
+  const navToggle = document.querySelector('.nav-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if(navToggle && navLinks){
+    navToggle.addEventListener('click', ()=>{
+      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', (!expanded).toString());
+      navLinks.classList.toggle('show');
+    });
+    navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>{ navLinks.classList.remove('show'); navToggle.setAttribute('aria-expanded','false'); }));
+  }
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = lightbox && lightbox.querySelector('img');
+  document.querySelectorAll('.gallery img').forEach(img => {
+    img.addEventListener('click', ()=>{
+      const src = img.getAttribute('data-full') || img.src;
+      if(lbImg){ lbImg.src = src; lightbox.setAttribute('aria-hidden','false'); }
+    });
+  });
+  if(lightbox){
+    lightbox.addEventListener('click', (e)=>{
+      if(e.target === lightbox || e.target.classList.contains('lb-close')){
+        lightbox.setAttribute('aria-hidden','true');
+        lbImg.src = '';
+      }
+    });
+  }
+  </script>
+</body>
+</html>
