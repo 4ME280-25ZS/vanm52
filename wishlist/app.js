@@ -2,13 +2,7 @@
 const SUPABASE_URL = 'https://iubsexdrmgpgkbwmgrqi.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_HII35U4kVlPJx7MHaflMyw_5kVHG0ly';
 
-const { createClient } = window.supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// Local gifts array (pro fallback)
 let gifts = [];
-
-// Seznam zvířátek
 const animals = ['🐯', '🦁', '🐻', '🦊', '🦝', '🐻‍❄️', '🐼', '🐨', '🦘', '🦌', '🦬', '🐄', '🐂', '🐃', '🐅', '🦒', '🦓', '🦏', '🐘', '🦛', '🦗', '🦍', '🦧', '🐺'];
 
 function getMyAnimal() {
@@ -22,33 +16,31 @@ function getMyAnimal() {
 
 async function loadGifts() {
     try {
-        const { data, error } = await supabase
-            .from('gifts')
-            .select('*')
-            .order('id');
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/gifts?select=*&order=id.asc`,
+            {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
         
-        if (error) throw error;
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
         
-        gifts = data || [];
+        gifts = await response.json();
         displayGifts();
-        subscribeToChanges();
+        
+        // Refresh každých 5 sekund
+        setTimeout(loadGifts, 5000);
     } catch (error) {
         console.error('Chyba při načítání:', error);
-        alert('Chyba při připojení k databázi');
+        // Zkus znovu za 3 sekundy
+        setTimeout(loadGifts, 3000);
     }
-}
-
-function subscribeToChanges() {
-    supabase
-        .channel('gifts-changes')
-        .on('postgres_changes', 
-            { event: '*', schema: 'public', table: 'gifts' },
-            (payload) => {
-                console.log('Změna v databázi:', payload);
-                loadGifts();
-            }
-        )
-        .subscribe();
 }
 
 function displayGifts() {
@@ -64,8 +56,6 @@ function displayGifts() {
         let status = '';
         if (gift.is_bought && gift.bought_by) {
             status = `<span class="gift-status status-taken">❌ Zabrané - ${gift.bought_by}</span>`;
-        } else if (gift.is_bought && gift.bought_by === myAnimal) {
-            status = `<span class="gift-status status-taken">❌ Zabrané - tvé (${myAnimal})</span>`;
         } else if (!gift.is_bought) {
             status = '<span class="gift-status status-available">✅ Volné</span>';
         } else {
@@ -98,14 +88,28 @@ async function buyGift(giftId) {
     const myAnimal = getMyAnimal();
     
     try {
-        const { error } = await supabase
-            .from('gifts')
-            .update({ is_bought: true, bought_by: myAnimal })
-            .eq('id', giftId);
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/gifts?id=eq.${giftId}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    is_bought: true,
+                    bought_by: myAnimal
+                })
+            }
+        );
         
-        if (error) throw error;
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
         
         console.log('Dar koupen!');
+        loadGifts();
     } catch (error) {
         console.error('Chyba:', error);
         alert('Chyba při koupi!');
@@ -116,14 +120,28 @@ async function cancelPurchase(giftId) {
     if (!confirm('Chceš zrušit koupi tohoto daru?')) return;
     
     try {
-        const { error } = await supabase
-            .from('gifts')
-            .update({ is_bought: false, bought_by: null })
-            .eq('id', giftId);
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/gifts?id=eq.${giftId}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    is_bought: false,
+                    bought_by: null
+                })
+            }
+        );
         
-        if (error) throw error;
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
         
         console.log('Koupi zrušena!');
+        loadGifts();
     } catch (error) {
         console.error('Chyba:', error);
         alert('Chyba při zrušení!');
