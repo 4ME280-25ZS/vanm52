@@ -50,25 +50,133 @@ body{
 }
 
 /* Simple business card styles */
-.simple-card{max-width:420px;padding:28px 22px}
-.avatar-wrap{display:flex;justify-content:center;margin-bottom:12px}
-.avatar-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid rgba(56,189,248,0.95);box-shadow:0 8px 18px rgba(2,6,23,0.5)}
-.name{font-size:20px;margin:6px 0}
-.simple-card .role{color:var(--muted);margin-bottom:14px}
-.contact-buttons{display:flex;flex-direction:column;gap:8px;align-items:center}
-.contact-buttons .btn{width:100%;max-width:320px}
-.card-foot{margin-top:14px;color:var(--muted);font-size:13px}
+.simple-card{
+  max-width:420px;
+  padding:40px 28px;
+  position:relative;
+  overflow:hidden;
+}
+
+.simple-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.simple-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.avatar-wrap{
+  display:flex;
+  justify-content:center;
+  margin-bottom:24px;
+  position: relative;
+}
+
+.avatar-wrap::after {
+  content: '';
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  z-index: -1;
+  opacity: 0.3;
+  filter: blur(10px);
+}
+
+.avatar-photo{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  object-fit:cover;
+  border:5px solid white;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.avatar-photo:hover {
+  transform: scale(1.05);
+}
+
+.name{
+  font-size:26px;
+  margin:16px 0 8px;
+  font-weight:700;
+  color:#333;
+}
+
+.simple-card .role{
+  color:#666;
+  margin-bottom:24px;
+  font-size:15px;
+  font-weight:500;
+}
+
+.contact-buttons{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:center;
+}
+
+.contact-buttons .btn{
+  width:100%;
+  max-width:320px;
+  transition: all 0.3s ease;
+}
+
+.btn {
+  display:inline-block;
+  padding:12px 18px;
+  border-radius:10px;
+  text-decoration:none;
+  color:white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-weight:600;
+  font-size:14px;
+  border:none;
+  cursor:pointer;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline{
+  background:white;
+  color: #667eea;
+  border:2px solid #667eea;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.15);
+}
+
+.btn-outline:hover {
+  background: #f8f9ff;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+}
+
+.btn i {
+  margin-right: 6px;
+}
+
+.card-foot{
+  margin-top:24px;
+  color:#999;
+  font-size:12px;
+}
 h1{margin:8px 0 4px;font-size:22px}
 .role{margin:0;color: #666;font-size:14px}
-.about{margin:18px 0;text-align:left}
-.lead{color:var(--muted);max-width:560px;margin:10px auto}
-.hero{display:flex;gap:20px;align-items:center;justify-content:center;text-align:left;padding:18px 0}
-.hero-text{max-width:520px}
-.contacts{display:flex;gap:10px;justify-content:center;margin:18px 0}
-.btn{
-  display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;color:white;background: #667eea;font-weight:600;
-}
-.btn-outline{background:transparent;color: #667eea;border:2px solid #667eea}
 .gallery{margin-top:8px;text-align:left}
 .gallery .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .gallery img{
