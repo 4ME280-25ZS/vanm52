@@ -1,8 +1,31 @@
-// Supabase config
-const SUPABASE_URL = 'https://iubsexdrmgpgkbwmgrqi.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_HII35U4kVlPJx7MHaflMyw_5kVHG0ly';
+// Lokální dary
+const gifts = [
+    { id: 1, title: 'Příslušenství na notebook', price: 250 },
+    { id: 2, title: 'USB hub', price: 350 },
+    { id: 3, title: 'Bezdrátová myš', price: 280 },
+    { id: 4, title: 'Klávesnice mechanická', price: 500 },
+    { id: 5, title: 'Monitor stojánek', price: 400 },
+    { id: 6, title: 'Pouzdro na laptop', price: 320 },
+    { id: 7, title: 'Webkamera HD', price: 380 },
+    { id: 8, title: 'Myš mat na tiskárnu', price: 150 },
+    { id: 9, title: 'Sluchátka on-ear', price: 420 },
+    { id: 10, title: 'Kabel lightning', price: 180 },
+    { id: 11, title: 'Adaptér USB-C', price: 200 },
+    { id: 12, title: 'Počítač stůl deska', price: 800 },
+    { id: 13, title: 'Židle kancelářská', price: 1200 },
+    { id: 14, title: 'Lampička LED', price: 420 },
+    { id: 15, title: 'Desk pad látka', price: 350 },
+    { id: 16, title: 'Hodinky inteligentní', price: 1500 },
+    { id: 17, title: 'Tablet 10"', price: 2500 },
+    { id: 18, title: 'E-reader', price: 2000 },
+    { id: 19, title: 'Fotoaparát kompakt', price: 2800 },
+    { id: 20, title: 'Kamera sport', price: 1800 },
+    { id: 21, title: 'Reproduktor Bluetooth', price: 900 },
+    { id: 22, title: 'Bezdrátové nabíječky', price: 850 },
+    { id: 23, title: 'Powerbank 20000', price: 650 },
+    { id: 24, title: 'Selfie tyč', price: 280 },
+];
 
-let gifts = [];
 const animals = ['🐯', '🦁', '🐻', '🦊', '🦝', '🐻‍❄️', '🐼', '🐨', '🦘', '🦌', '🦬', '🐄', '🐂', '🐃', '🐅', '🦒', '🦓', '🦏', '🐘', '🦛', '🦗', '🦍', '🦧', '🐺'];
 
 function getMyAnimal() {
@@ -14,61 +37,40 @@ function getMyAnimal() {
     return animal;
 }
 
-async function loadGifts() {
-    try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/gifts?select=*&order=id.asc`,
-            {
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
-        gifts = await response.json();
-        displayGifts();
-        
-        // Refresh každých 5 sekund
-        setTimeout(loadGifts, 5000);
-    } catch (error) {
-        console.error('Chyba při načítání:', error);
-        // Zkus znovu za 3 sekundy
-        setTimeout(loadGifts, 3000);
-    }
+function getMyPurchases() {
+    const purchases = localStorage.getItem('myPurchases');
+    return purchases ? JSON.parse(purchases) : [];
+}
+
+function saveMyPurchases(purchases) {
+    localStorage.setItem('myPurchases', JSON.stringify(purchases));
 }
 
 function displayGifts() {
+function displayGifts() {
     const grid = document.getElementById('giftsGrid');
-    const myAnimal = getMyAnimal();
+    const myPurchases = getMyPurchases();
     
     grid.innerHTML = '';
     
     gifts.forEach(gift => {
+        const isMyPurchase = myPurchases.includes(gift.id);
+        
         const card = document.createElement('div');
         card.className = 'gift-card';
         
         let status = '';
-        if (gift.is_bought && gift.bought_by) {
-            status = `<span class="gift-status status-taken">❌ Zabrané - ${gift.bought_by}</span>`;
-        } else if (!gift.is_bought) {
-            status = '<span class="gift-status status-available">✅ Volné</span>';
+        if (isMyPurchase) {
+            status = '<span class="gift-status status-taken">❌ Zabrané - tvé</span>';
         } else {
-            status = '<span class="gift-status status-taken">❌ Zabrané</span>';
+            status = '<span class="gift-status status-available">✅ Volné</span>';
         }
         
         let actionButton = '';
-        if (gift.bought_by === myAnimal) {
+        if (isMyPurchase) {
             actionButton = `<button class="btn-cancel" onclick="cancelPurchase(${gift.id})">Zrušit koupi</button>`;
-        } else if (!gift.is_bought) {
-            actionButton = `<button class="btn-buy" onclick="buyGift(${gift.id})">Koupit</button>`;
         } else {
-            actionButton = `<button class="btn-disabled" disabled>Zabrané</button>`;
+            actionButton = `<button class="btn-buy" onclick="buyGift(${gift.id})">Koupit</button>`;
         }
         
         card.innerHTML = `
@@ -84,71 +86,27 @@ function displayGifts() {
     });
 }
 
-async function buyGift(giftId) {
-    const myAnimal = getMyAnimal();
-    
-    try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/gifts?id=eq.${giftId}`,
-            {
-                method: 'PATCH',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    is_bought: true,
-                    bought_by: myAnimal
-                })
-            }
-        );
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
-        console.log('Dar koupen!');
-        loadGifts();
-    } catch (error) {
-        console.error('Chyba:', error);
-        alert('Chyba při koupi!');
+function buyGift(giftId) {
+    let myPurchases = getMyPurchases();
+    if (!myPurchases.includes(giftId)) {
+        myPurchases.push(giftId);
+        saveMyPurchases(myPurchases);
     }
+    
+    displayGifts();
 }
 
-async function cancelPurchase(giftId) {
+function cancelPurchase(giftId) {
     if (!confirm('Chceš zrušit koupi tohoto daru?')) return;
     
-    try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/gifts?id=eq.${giftId}`,
-            {
-                method: 'PATCH',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    is_bought: false,
-                    bought_by: null
-                })
-            }
-        );
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
-        console.log('Koupi zrušena!');
-        loadGifts();
-    } catch (error) {
-        console.error('Chyba:', error);
-        alert('Chyba při zrušení!');
-    }
+    let myPurchases = getMyPurchases();
+    myPurchases = myPurchases.filter(id => id !== giftId);
+    saveMyPurchases(myPurchases);
+    
+    displayGifts();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('myAnimal').textContent = getMyAnimal();
-    loadGifts();
+    displayGifts();
 });
