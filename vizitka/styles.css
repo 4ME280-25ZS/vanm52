@@ -54,7 +54,6 @@ body::after {
   padding:28px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   text-align:center;
-  margin-top: calc(var(--header-height) + 18px);
   position: relative;
   z-index: 10;
 }
