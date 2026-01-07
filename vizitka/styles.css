@@ -145,10 +145,19 @@ body::after {
 }
 
 .simple-card .role{
-  color:#666;
-  margin-bottom:24px;
-  font-size:15px;
-  font-weight:500;
+  color:#667eea;
+  margin-bottom:4px;
+  font-size:20px;
+  font-weight:600;
+}
+
+.subtitle {
+  display: block;
+  color: #999;
+  font-size: 13px;
+  font-weight: 400;
+  margin-top: 8px;
+  margin-bottom: 24px;
 }
 
 .contact-buttons{
