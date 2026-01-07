@@ -1,42 +1,15 @@
-// Lokální dary
-const gifts = [
-    { id: 1, title: 'Příslušenství na notebook', price: 250, is_bought: false, bought_by: null },
-    { id: 2, title: 'USB hub', price: 350, is_bought: false, bought_by: null },
-    { id: 3, title: 'Bezdrátová myš', price: 280, is_bought: false, bought_by: null },
-    { id: 4, title: 'Klávesnice mechanická', price: 500, is_bought: false, bought_by: null },
-    { id: 5, title: 'Monitor stojánek', price: 400, is_bought: false, bought_by: null },
-    { id: 6, title: 'Pouzdro na laptop', price: 320, is_bought: false, bought_by: null },
-    { id: 7, title: 'Webkamera HD', price: 380, is_bought: false, bought_by: null },
-    { id: 8, title: 'Myš mat na tiskárnu', price: 150, is_bought: false, bought_by: null },
-    { id: 9, title: 'Sluchátka on-ear', price: 420, is_bought: false, bought_by: null },
-    { id: 10, title: 'Kabel lightning', price: 180, is_bought: false, bought_by: null },
-    { id: 11, title: 'Adaptér USB-C', price: 200, is_bought: false, bought_by: null },
-    { id: 12, title: 'Počítač stůl deska', price: 800, is_bought: false, bought_by: null },
-    { id: 13, title: 'Židle kancelářská', price: 1200, is_bought: false, bought_by: null },
-    { id: 14, title: 'Lampička LED', price: 420, is_bought: false, bought_by: null },
-    { id: 15, title: 'Desk pad látka', price: 350, is_bought: false, bought_by: null },
-    { id: 16, title: 'Hodinky inteligentní', price: 1500, is_bought: false, bought_by: null },
-    { id: 17, title: 'Tablet 10"', price: 2500, is_bought: false, bought_by: null },
-    { id: 18, title: 'E-reader', price: 2000, is_bought: false, bought_by: null },
-    { id: 19, title: 'Fotoaparát kompakt', price: 2800, is_bought: false, bought_by: null },
-    { id: 20, title: 'Kamera sport', price: 1800, is_bought: false, bought_by: null },
-    { id: 21, title: 'Reproduktor Bluetooth', price: 900, is_bought: false, bought_by: null },
-    { id: 22, title: 'Bezdrátové nabíječky', price: 850, is_bought: false, bought_by: null },
-    { id: 23, title: 'Powerbank 20000', price: 650, is_bought: false, bought_by: null },
-    { id: 24, title: 'Selfie tyč', price: 280, is_bought: false, bought_by: null },
-];
+// Supabase config
+const SUPABASE_URL = 'https://iubsexdrmgpgkbwmgrqi.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_HII35U4kVlPJx7MHaflMyw_5kVHG0ly';
+
+const { createClient } = window.supabase;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Local gifts array (pro fallback)
+let gifts = [];
 
 // Seznam zvířátek
 const animals = ['🐯', '🦁', '🐻', '🦊', '🦝', '🐻‍❄️', '🐼', '🐨', '🦘', '🦌', '🦬', '🐄', '🐂', '🐃', '🐅', '🦒', '🦓', '🦏', '🐘', '🦛', '🦗', '🦍', '🦧', '🐺'];
-
-function getMyPurchases() {
-    const purchases = localStorage.getItem('myPurchases');
-    return purchases ? JSON.parse(purchases) : [];
-}
-
-function saveMyPurchases(purchases) {
-    localStorage.setItem('myPurchases', JSON.stringify(purchases));
-}
 
 function getMyAnimal() {
     let animal = localStorage.getItem('myAnimal');
@@ -47,34 +20,62 @@ function getMyAnimal() {
     return animal;
 }
 
+async function loadGifts() {
+    try {
+        const { data, error } = await supabase
+            .from('gifts')
+            .select('*')
+            .order('id');
+        
+        if (error) throw error;
+        
+        gifts = data || [];
+        displayGifts();
+        subscribeToChanges();
+    } catch (error) {
+        console.error('Chyba při načítání:', error);
+        alert('Chyba při připojení k databázi');
+    }
+}
+
+function subscribeToChanges() {
+    supabase
+        .channel('gifts-changes')
+        .on('postgres_changes', 
+            { event: '*', schema: 'public', table: 'gifts' },
+            (payload) => {
+                console.log('Změna v databázi:', payload);
+                loadGifts();
+            }
+        )
+        .subscribe();
+}
+
 function displayGifts() {
     const grid = document.getElementById('giftsGrid');
-    const myPurchases = getMyPurchases();
+    const myAnimal = getMyAnimal();
     
     grid.innerHTML = '';
     
     gifts.forEach(gift => {
-        const isMyPurchase = myPurchases.includes(gift.id);
-        const isBought = gift.is_bought || isMyPurchase;
-        
         const card = document.createElement('div');
         card.className = 'gift-card';
         
         let status = '';
-        if (isBought && gift.bought_by) {
+        if (gift.is_bought && gift.bought_by) {
             status = `<span class="gift-status status-taken">❌ Zabrané - ${gift.bought_by}</span>`;
-        } else if (isBought && isMyPurchase && !gift.bought_by) {
-            status = `<span class="gift-status status-taken">❌ Zabrané - tvé</span>`;
-        } else if (!isBought) {
+        } else if (gift.is_bought && gift.bought_by === myAnimal) {
+            status = `<span class="gift-status status-taken">❌ Zabrané - tvé (${myAnimal})</span>`;
+        } else if (!gift.is_bought) {
             status = '<span class="gift-status status-available">✅ Volné</span>';
         } else {
             status = '<span class="gift-status status-taken">❌ Zabrané</span>';
         }
         
         let actionButton = '';
-        if (isMyPurchase) {
+        if (gift.bought_by === myAnimal) {
             actionButton = `<button class="btn-cancel" onclick="cancelPurchase(${gift.id})">Zrušit koupi</button>`;
-        } else if (!isBought) {
+        } else if (!gift.is_bought) {
             actionButton = `<button class="btn-buy" onclick="buyGift(${gift.id})">Koupit</button>`;
         } else {
             actionButton = `<button class="btn-disabled" disabled>Zabrané</button>`;
@@ -93,42 +94,43 @@ function displayGifts() {
     });
 }
 
-function buyGift(giftId) {
-    const gift = gifts.find(g => g.id === giftId);
-    if (gift) {
-        gift.is_bought = true;
-        gift.bought_by = getMyAnimal();
-    }
+async function buyGift(giftId) {
+    const myAnimal = getMyAnimal();
     
-    let myPurchases = getMyPurchases();
-    if (!myPurchases.includes(giftId)) {
-        myPurchases.push(giftId);
-        saveMyPurchases(myPurchases);
+    try {
+        const { error } = await supabase
+            .from('gifts')
+            .update({ is_bought: true, bought_by: myAnimal })
+            .eq('id', giftId);
+        
+        if (error) throw error;
+        
+        console.log('Dar koupen!');
+    } catch (error) {
+        console.error('Chyba:', error);
+        alert('Chyba při koupi!');
     }
-    
-    displayGifts();
 }
 
-function cancelPurchase(giftId) {
+async function cancelPurchase(giftId) {
     if (!confirm('Chceš zrušit koupi tohoto daru?')) return;
     
-    const gift = gifts.find(g => g.id === giftId);
-    if (gift) {
-        gift.is_bought = false;
-        gift.bought_by = null;
+    try {
+        const { error } = await supabase
+            .from('gifts')
+            .update({ is_bought: false, bought_by: null })
+            .eq('id', giftId);
+        
+        if (error) throw error;
+        
+        console.log('Koupi zrušena!');
+    } catch (error) {
+        console.error('Chyba:', error);
+        alert('Chyba při zrušení!');
     }
-    
-    let myPurchases = getMyPurchases();
-    myPurchases = myPurchases.filter(id => id !== giftId);
-    saveMyPurchases(myPurchases);
-    
-    displayGifts();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Zobraz tvoje zvířátko
     document.getElementById('myAnimal').textContent = getMyAnimal();
-    
-    // Zobraz dary
-    displayGifts();
+    loadGifts();
 });
