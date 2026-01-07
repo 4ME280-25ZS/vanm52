@@ -17,49 +17,6 @@ body{
   align-items:center;
   justify-content:center;
   padding:24px;
-  position: relative;
-  min-height: 100vh;
-}
-
-/* Statické bublinky v pozadí */
-.bubble {
-  position: fixed;
-  border-radius: 50%;
-  opacity: 0.08;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.bubble-1 {
-  width: 150px;
-  height: 150px;
-  background: rgba(255, 255, 255, 0.5);
-  top: 5%;
-  left: 5%;
-}
-
-.bubble-2 {
-  width: 100px;
-  height: 100px;
-  background: rgba(255, 255, 255, 0.5);
-  top: 70%;
-  right: 10%;
-}
-
-.bubble-3 {
-  width: 120px;
-  height: 120px;
-  background: rgba(255, 255, 255, 0.5);
-  bottom: 15%;
-  left: 15%;
-}
-
-.bubble-4 {
-  width: 80px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.5);
-  top: 50%;
-  right: 5%;
 }
 .card{
   width:100%;
